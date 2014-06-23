@@ -18,17 +18,20 @@ class LessMe(sublime_plugin.EventListener):
 		if ext in ['less'] or 'less' in [syntax] :
 			line = view.substr(view.line(1))
 			tag = "//@module"
-			moudles = [];
+			modules = [];
 			if line.startswith(tag):
-				moudles = (line[len(tag):-1]).split()
+				modules = (line[len(tag):]).split()
 
-			if len(moudles):
+			if len(modules):
 				current_dir = os.path.dirname(filename)
-				for module in moudles :
+				for module in modules :
 					origin = os.path.realpath(os.path.join(current_dir,module))
+
 					if(os.path.exists(origin)):
 						compiled = self.get_compiled_file_name(origin)
 						self.compile_to_css(origin, compiled)
+					else:
+						sublime.status_message('['+module+']文件不存在')
 			else:
 				compressed = filepath + '.css'
 				self.compile_to_css(filename, compressed)
